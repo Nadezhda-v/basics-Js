@@ -1,5 +1,7 @@
 'use strict';
 
+let isGameRPSFinished = false;
+
 (() => {
   const FIGURES_ENG = ['rock', 'scissors', 'paper'];
   const FIGURES_RUS = ['камень', 'ножницы', 'бумага'];
@@ -68,34 +70,49 @@
       const isValidInputPlayer = (val) => {
         val = val.toLowerCase();
         inputPlayer = FIGURES.find((str) => str.startsWith(val));
-        return inputPlayer !== undefined;
+        if (inputPlayer !== undefined) {
+          return inputPlayer;
+        } else {
+          return false;
+        }
       };
 
       const isCancel = (str) => {
         if (str === null) {
           const exit = confirm(`${languageText.exit}`);
           if (exit === true) {
-            return alert(`
+            alert(`
               ${languageText.result}:
               ${languageText.computer}: ${resultOne.computer}
               ${languageText.player}: ${resultOne.player}`);
+            return true;
           } else {
             getInputPlayer();
+            return false;
           }
         }
       };
 
       const runGame = () => {
-        randomInt = getRandomIntInclusive(0, 2);
-        inputComputer = FIGURES[randomInt];
-
         getInputPlayer();
 
-        isCancel(inputString);
+        if (isCancel(inputString)) {
+          isGameRPSFinished = true;
+          return;
+        }
 
         if (!isValidInputPlayer(inputString)) {
           getInputPlayer();
         }
+
+        while (inputPlayer === undefined || typeof inputPlayer === 'boolean') {
+          getInputPlayer();
+          isCancel(inputString);
+          inputPlayer = isValidInputPlayer(inputString);
+        }
+
+        randomInt = getRandomIntInclusive(0, 2);
+        inputComputer = FIGURES[randomInt];
 
         if (inputPlayer === inputComputer) {
           alert(`
@@ -125,7 +142,6 @@
           resultOne.computer += 1;
         }
       };
-
       runGame();
     };
   };
@@ -232,8 +248,13 @@
             }
 
             if (isNumberPlayer !== isNumberComputer) {
-              result.computer -= inputPlayer;
-              result.player += inputPlayer;
+              if (inputPlayer <= result.computer) {
+                result.computer -= inputPlayer;
+                result.player += inputPlayer;
+              } else {
+                result.player += result.computer;
+                result.computer -= result.computer;
+              }
 
               if (result.computer < 1) {
                 result.computer = 0;
@@ -275,8 +296,13 @@
             }
 
             if (isNumberPlayer !== isNumberComputer) {
-              result.computer += inputComputer;
-              result.player -= inputComputer;
+              if (inputComputer <= result.player) {
+                result.computer += inputComputer;
+                result.player -= inputComputer;
+              } else {
+                result.computer += result.player;
+                result.player -= result.player;
+              }
 
               if (result.player < 1) {
                 result.player = 0;
@@ -331,3 +357,5 @@
     window.gameMar = game;
   })();
 })();
+
+export { isGameRPSFinished };

@@ -1,7 +1,11 @@
 'use strict';
 
+import { isGameRPSFinished } from './game_hard.js';
+
 const startGameRPS = window.gameRPS();
 startGameRPS();
 
-const startGameMar = window.gameMar();
-startGameMar();
+if (!isGameRPSFinished) {
+  const startGameMar = window.gameMar();
+  startGameMar();
+}

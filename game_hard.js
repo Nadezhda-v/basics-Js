@@ -1,4 +1,4 @@
-'use strict';
+
 
 let isGameRPSFinished = false;
 
@@ -358,4 +358,4 @@ let isGameRPSFinished = false;
   })();
 })();
 
-export { isGameRPSFinished };
+export {isGameRPSFinished};

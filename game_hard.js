@@ -1,6 +1,6 @@
 
 
-let isGameRPSFinished = false;
+export let isGameRPSFinished = false;
 
 (() => {
   const FIGURES_ENG = ['rock', 'scissors', 'paper'];
@@ -65,6 +65,9 @@ let isGameRPSFinished = false;
 
       const getInputPlayer = () => {
         inputString = prompt(`${FIGURES[0]}, ${FIGURES[1]}, ${FIGURES[2]}?`);
+        if (inputString === '') {
+          getInputPlayer();
+        }
       };
 
       const isValidInputPlayer = (val) => {
@@ -93,7 +96,7 @@ let isGameRPSFinished = false;
         }
       };
 
-      const runGame = () => {
+      const choiceFigures = () => {
         getInputPlayer();
 
         if (isCancel(inputString)) {
@@ -102,24 +105,32 @@ let isGameRPSFinished = false;
         }
 
         if (!isValidInputPlayer(inputString)) {
-          getInputPlayer();
-        }
-
-        while (inputPlayer === undefined || typeof inputPlayer === 'boolean') {
-          getInputPlayer();
-          isCancel(inputString);
-          inputPlayer = isValidInputPlayer(inputString);
+          choiceFigures();
         }
 
         randomInt = getRandomIntInclusive(0, 2);
-        inputComputer = FIGURES[randomInt];
+        return inputComputer = FIGURES[randomInt];
+      };
 
-        if (inputPlayer === inputComputer) {
-          alert(`
+      const runGame = () => {
+        choiceFigures();
+
+        if (inputString === null) {
+          return;
+        }
+
+        let isDrow = false;
+
+        while (!isDrow) {
+          if (inputPlayer === inputComputer) {
+            alert(`
             ${languageText.computer}: ${inputComputer}
             ${languageText.player}: ${inputPlayer}
             ${languageText.drow}`);
-          runGame();
+            choiceFigures();
+          } else {
+            isDrow = true;
+          }
         }
 
         if (
@@ -345,7 +356,7 @@ let isGameRPSFinished = false;
               result.computer = 5;
               window.gameRPS()();
             } else {
-              return;
+              return false;
             }
           }
           runGame();
@@ -357,5 +368,3 @@ let isGameRPSFinished = false;
     window.gameMar = game;
   })();
 })();
-
-export {isGameRPSFinished};
